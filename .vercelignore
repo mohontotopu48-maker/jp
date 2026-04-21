@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Database (not needed on Vercel serverless)
+db/
+*.db
+*.db-journal
+
+# Prisma
+prisma/migrations/
+
+# Build
+.next/
+dist/
+out/
+build/
+
+# Environment (contains local DB path)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+dev.log
+server.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.git/
+.gitignore
+download/
+upload/
+skills/
+mini-services/
+examples/
+server-test.log
+Caddyfile
