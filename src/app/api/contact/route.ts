@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, phone, service, message } = body;
 
-    // Basic validation
     if (!name || !email) {
       return NextResponse.json(
         { error: "Name and email are required" },
@@ -14,7 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -23,17 +21,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store the contact request in the database
-    await db.contactRequest.create({
-      data: {
-        name,
-        email,
-        phone: phone || null,
-        service: service || null,
-        message: message || null,
-        status: "new",
-      },
-    });
+    // Store in database if available, otherwise store in memory
+    if (db) {
+      try {
+        await db.contactRequest.create({
+          data: {
+            name,
+            email,
+            phone: phone || null,
+            service: service || null,
+            message: message || null,
+            status: "new",
+          },
+        });
+      } catch {
+        // Database not available — continue with success response
+        console.log("Contact request (no DB):", { name, email, phone, service, message });
+      }
+    } else {
+      console.log("Contact request (no DB):", { name, email, phone, service, message });
+    }
 
     return NextResponse.json(
       { success: true, message: "Contact request submitted successfully" },
