@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,26 +20,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store in database if available, otherwise store in memory
-    if (db) {
-      try {
-        await db.contactRequest.create({
-          data: {
-            name,
-            email,
-            phone: phone || null,
-            service: service || null,
-            message: message || null,
-            status: "new",
-          },
-        });
-      } catch {
-        // Database not available — continue with success response
-        console.log("Contact request (no DB):", { name, email, phone, service, message });
-      }
-    } else {
-      console.log("Contact request (no DB):", { name, email, phone, service, message });
-    }
+    // Log contact request (Vercel serverless — no persistent DB)
+    console.log("Contact request received:", { name, email, phone, service, message });
 
     return NextResponse.json(
       { success: true, message: "Contact request submitted successfully" },

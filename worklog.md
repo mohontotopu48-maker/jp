@@ -63,3 +63,32 @@ Stage Summary:
 - Client-side SPA routing via Zustand (single route / with dynamic content switching)
 - 8 total AI-generated brand images
 - Header with services dropdown, footer with interactive links
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Convert to Vercel-compatible file-based routing
+
+Work Log:
+- Replaced Zustand SPA routing with Next.js file-based App Router routes
+- Created `/app/about/page.tsx` — standalone About Us page with metadata
+- Created `/app/services/[slug]/page.tsx` — dynamic service pages with generateStaticParams, generateMetadata, and slug-to-data mapping
+- Updated `components/header.tsx` — replaced usePageStore with usePathname + next/link, Services dropdown, mobile menu all use Link components
+- Updated `components/footer.tsx` — replaced all usePageStore navigation with next/link
+- Updated `components/service-page.tsx` — replaced goHome() with Link to "/"
+- Updated `components/services-section.tsx` — replaced navigateTo() with Link wrapped cards
+- Updated `components/pages/about-page.tsx` — replaced goHome() with Link to "/"
+- Updated `app/page.tsx` — removed ServiceRouter and all Zustand imports, now renders home-only content
+- Updated `/api/contact/route.ts` — removed Prisma/SQLite dependency, uses console.log for logging (Vercel serverless compatible)
+- Updated `next.config.ts` — added `images: { unoptimized: true }` for local PNG images
+- Verified all routes: / (200), /about (200), /services/interior (200), /services/exterior (200), /services/skimming (200), /services/ceiling (200), /services/crack-repairs (200), /services/nonexistent (404)
+- Verified API endpoints: POST /api/contact (200), chatbot API intact
+- All ESLint checks pass cleanly
+
+Stage Summary:
+- Full conversion from Zustand SPA to Next.js file-based routing — all pages accessible via direct URLs
+- 7 working routes: home + about + 5 service detail pages (statically generated)
+- No more Prisma/SQLite dependency in API routes — fully serverless compatible
+- No more Zustand dependency for navigation — pure Next.js Link/routing
+- Chatbot API (z-ai-web-dev-sdk) unchanged and working
+- Site is ready for Vercel deployment with zero build errors

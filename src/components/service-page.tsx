@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +17,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Image from "next/image";
-import { usePageStore } from "@/lib/page-store";
 
 interface ServicePageProps {
   title: string;
@@ -43,8 +43,6 @@ export function ServicePage({
   extraContent,
   faqs,
 }: ServicePageProps) {
-  const { goHome } = usePageStore();
-
   return (
     <div>
       {/* Page Hero */}
@@ -60,13 +58,13 @@ export function ServicePage({
           <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/90 to-charcoal/60" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button
-            onClick={goHome}
+          <Link
+            href="/"
             className="inline-flex items-center gap-2 text-white/60 hover:text-accent-orange transition-colors mb-8 text-sm font-medium"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
-          </button>
+          </Link>
           <Badge
             variant="outline"
             className="border-accent-orange/40 text-accent-orange bg-accent-orange/10 mb-4 px-4 py-1.5 text-sm font-medium"
@@ -183,7 +181,7 @@ export function ServicePage({
       </section>
 
       {/* Process */}
-      <section className="py-16 md:py-24 bg-charcoal">
+      <section className="py-16 md:py-24 bg-charcoal relative overflow-hidden">
         <div className="texture-overlay absolute inset-0" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -291,12 +289,12 @@ export function ServicePage({
             your project and provide a detailed proposal within 24 hours.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#contact" onClick={() => goHome()}>
+            <Link href="/#contact">
               <Button className="orange-gradient text-white font-bold px-8 py-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-0 gap-2 text-lg">
                 Get Free Quote
                 <ArrowRight className="h-5 w-5" />
               </Button>
-            </a>
+            </Link>
             <a href="tel:+17145551234">
               <Button
                 variant="outline"

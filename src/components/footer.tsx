@@ -1,39 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { usePageStore, type PageKey } from "@/lib/page-store";
 
 export function Footer() {
-  const { navigateTo, goHome } = usePageStore();
-
-  const handleNav = (page: PageKey | null, hash?: string) => {
-    if (page) {
-      navigateTo(page);
-    } else if (hash) {
-      goHome();
-      setTimeout(() => {
-        const el = document.getElementById(hash);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const quickLinks = [
-    { label: "About Us", onClick: () => handleNav("about") },
-    { label: "Our Process", onClick: () => handleNav(null, "process") },
-    { label: "Why Choose Us", onClick: () => handleNav(null, "why-us") },
-    { label: "Testimonials", onClick: () => handleNav(null, "testimonials") },
-    { label: "Contact Us", onClick: () => handleNav(null, "contact") },
+    { label: "About Us", href: "/about" },
+    { label: "Our Process", href: "/#process" },
+    { label: "Why Choose Us", href: "/#why-us" },
+    { label: "Testimonials", href: "/#testimonials" },
+    { label: "Contact Us", href: "/#contact" },
   ];
 
   const serviceLinks = [
-    { label: "Interior Plastering", onClick: () => handleNav("service-interior") },
-    { label: "Exterior Plastering", onClick: () => handleNav("service-exterior") },
-    { label: "Skimming & Wall Smoothing", onClick: () => handleNav("service-skimming") },
-    { label: "Ceiling Plastering", onClick: () => handleNav("service-ceiling") },
-    { label: "Crack Repairs", onClick: () => handleNav("service-repair") },
+    { label: "Interior Plastering", href: "/services/interior" },
+    { label: "Exterior Plastering", href: "/services/exterior" },
+    { label: "Skimming & Wall Smoothing", href: "/services/skimming" },
+    { label: "Ceiling Plastering", href: "/services/ceiling" },
+    { label: "Crack Repairs", href: "/services/crack-repairs" },
   ];
 
   return (
@@ -43,7 +28,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <button onClick={goHome} className="flex items-center gap-2 mb-5">
+            <Link href="/" className="flex items-center gap-2 mb-5">
               <div className="w-10 h-10 rounded-lg bg-accent-orange text-white flex items-center justify-center font-heading font-extrabold text-lg">
                 JP
               </div>
@@ -55,7 +40,7 @@ export function Footer() {
                   Premium Finishes
                 </span>
               </div>
-            </button>
+            </Link>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
               Expert plastering, skimming, and wall finishing services for homes
               and businesses in Orange County. Quality work, clean finish,
@@ -87,12 +72,12 @@ export function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <button
-                    onClick={link.onClick}
+                  <Link
+                    href={link.href}
                     className="text-white/50 text-sm hover:text-accent-orange transition-colors duration-300"
                   >
                     {link.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -106,12 +91,12 @@ export function Footer() {
             <ul className="space-y-3">
               {serviceLinks.map((link) => (
                 <li key={link.label}>
-                  <button
-                    onClick={link.onClick}
+                  <Link
+                    href={link.href}
                     className="text-white/50 text-sm hover:text-accent-orange transition-colors duration-300"
                   >
                     {link.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

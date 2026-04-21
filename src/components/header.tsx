@@ -1,33 +1,34 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Phone, ChevronDown, ArrowLeft } from "lucide-react";
-import { usePageStore, type PageKey } from "@/lib/page-store";
+import { Menu, Phone, ChevronDown } from "lucide-react";
 
 const navLinks = [
-  { label: "Services", page: null, hasDropdown: true },
-  { label: "About", page: "about" as PageKey },
+  { label: "Services", href: null, hasDropdown: true },
+  { label: "About", href: "/about" },
   { label: "Contact", hash: "contact" },
 ];
 
 const servicePages = [
-  { label: "Interior Plastering", page: "service-interior" as PageKey },
-  { label: "Exterior Plastering", page: "service-exterior" as PageKey },
-  { label: "Skimming & Wall Smoothing", page: "service-skimming" as PageKey },
-  { label: "Ceiling Plastering", page: "service-ceiling" as PageKey },
-  { label: "Crack Repairs", page: "service-repair" as PageKey },
+  { label: "Interior Plastering", href: "/services/interior" },
+  { label: "Exterior Plastering", href: "/services/exterior" },
+  { label: "Skimming & Wall Smoothing", href: "/services/skimming" },
+  { label: "Ceiling Plastering", href: "/services/ceiling" },
+  { label: "Crack Repairs", href: "/services/crack-repairs" },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const { currentPage, navigateTo, goHome } = usePageStore();
+  const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isHomePage = currentPage === "home";
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,20 +49,23 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNavClick = (page: PageKey | null, hash?: string) => {
-    if (hash && isHomePage) {
+  const handleHashScroll = (hash: string) => {
+    if (isHomePage) {
       const el = document.getElementById(hash);
       if (el) {
         el.scrollIntoView({ behavior: "smooth" });
       }
-    } else if (page) {
-      navigateTo(page);
+    }
+  };
+
+  const handleNavClick = (href: string | null, hash?: string) => {
+    if (href) {
+      // Regular navigation via Link
     } else if (hash) {
-      goHome();
-      setTimeout(() => {
-        const el = document.getElementById(hash);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      if (isHomePage) {
+        handleHashScroll(hash);
+      }
+      // If not home, Link to "/" will handle it
     }
     setServicesOpen(false);
     setMobileOpen(false);
@@ -85,10 +89,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <button
-            onClick={goHome}
-            className="flex items-center gap-2 group"
-          >
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-lg bg-accent-orange text-white flex items-center justify-center font-heading font-extrabold text-lg shadow-md">
               JP
             </div>
@@ -110,21 +111,10 @@ export function Header() {
                 Premium Finishes
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {/* Back button on sub-pages */}
-            {!isHomePage && (
-              <button
-                onClick={goHome}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-concrete hover:text-accent-orange hover:bg-soft-bg transition-all duration-300 flex items-center gap-1.5"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Home
-              </button>
-            )}
-
             {/* Services with dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -143,46 +133,48 @@ export function Header() {
               {servicesOpen && (
                 <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-border py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   {servicePages.map((service) => (
-                    <button
-                      key={service.page}
-                      onClick={() => handleNavClick(service.page)}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                        currentPage === service.page
+                    <Link
+                      key={service.href}
+                      href={service.href}
+                      onClick={() => setServicesOpen(false)}
+                      className={`block w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                        pathname === service.href
                           ? "text-accent-orange bg-accent-orange/5 font-medium"
                           : "text-charcoal hover:bg-soft-bg hover:text-accent-orange"
                       }`}
                     >
                       {service.label}
-                    </button>
+                    </Link>
                   ))}
                   <div className="border-t border-border mt-1 pt-1">
-                    <button
+                    <Link
+                      href="/#services"
                       onClick={() => {
-                        goHome();
+                        setServicesOpen(false);
+                        if (!isHomePage) return;
                         setTimeout(() => {
                           const el = document.getElementById("services");
                           if (el) el.scrollIntoView({ behavior: "smooth" });
                         }, 100);
-                        setServicesOpen(false);
                       }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-concrete hover:text-accent-orange hover:bg-soft-bg transition-colors"
+                      className="block w-full text-left px-4 py-2.5 text-sm text-concrete hover:text-accent-orange hover:bg-soft-bg transition-colors"
                     >
                       View All Services
-                    </button>
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
 
             {/* About */}
-            <button
-              onClick={() => handleNavClick("about")}
+            <Link
+              href="/about"
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${getTextColor()} ${
-                currentPage === "about" ? "!text-accent-orange font-semibold" : ""
+                pathname === "/about" ? "!text-accent-orange font-semibold" : ""
               }`}
             >
               About
-            </button>
+            </Link>
 
             {/* Testimonials (home only) */}
             {isHomePage && (
@@ -195,25 +187,23 @@ export function Header() {
             )}
 
             {/* Contact */}
-            <button
-              onClick={() => handleNavClick(null, "contact")}
+            <Link
+              href="/#contact"
+              onClick={() => {
+                if (!isHomePage) return;
+                setTimeout(() => {
+                  const el = document.getElementById("contact");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${getTextColor()}`}
             >
               Contact
-            </button>
+            </Link>
           </nav>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
-            {!isHomePage && (
-              <button
-                onClick={goHome}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-concrete hover:text-accent-orange hover:bg-soft-bg transition-all duration-300 flex items-center gap-1.5"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Home
-              </button>
-            )}
             <a href="tel:+17145551234">
               <Button
                 variant="ghost"
@@ -227,12 +217,20 @@ export function Header() {
                 <span className="text-sm font-medium">(714) 555-1234</span>
               </Button>
             </a>
-            <Button
-              onClick={() => handleNavClick(null, "contact")}
-              className="orange-gradient text-white font-semibold px-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-0"
+            <Link
+              href="/#contact"
+              onClick={() => {
+                if (!isHomePage) return;
+                setTimeout(() => {
+                  const el = document.getElementById("contact");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
             >
-              Free Quote
-            </Button>
+              <Button className="orange-gradient text-white font-semibold px-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-0">
+                Free Quote
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu */}
@@ -261,25 +259,24 @@ export function Header() {
                   </div>
                 </div>
                 <nav className="flex flex-col p-4 gap-0.5 flex-1 overflow-y-auto">
-                  {!isHomePage && (
-                    <button
-                      onClick={goHome}
-                      className="px-4 py-3 rounded-lg text-charcoal font-medium hover:bg-soft-bg hover:text-accent-orange transition-colors flex items-center gap-2 text-left"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Back to Home
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleNavClick("about")}
+                  <Link
+                    href="/"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-3 rounded-lg text-charcoal font-medium hover:bg-soft-bg hover:text-accent-orange transition-colors text-left"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/about"
+                    onClick={() => setMobileOpen(false)}
                     className={`px-4 py-3 rounded-lg font-medium hover:bg-soft-bg transition-colors text-left ${
-                      currentPage === "about"
+                      pathname === "/about"
                         ? "text-accent-orange bg-accent-orange/5"
                         : "text-charcoal hover:text-accent-orange"
                     }`}
                   >
                     About Us
-                  </button>
+                  </Link>
 
                   <div className="px-4 pt-3 pb-1">
                     <span className="text-xs font-semibold uppercase tracking-wider text-concrete">
@@ -287,17 +284,18 @@ export function Header() {
                     </span>
                   </div>
                   {servicePages.map((service) => (
-                    <button
-                      key={service.page}
-                      onClick={() => handleNavClick(service.page)}
+                    <Link
+                      key={service.href}
+                      href={service.href}
+                      onClick={() => setMobileOpen(false)}
                       className={`px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-soft-bg transition-colors text-left ${
-                        currentPage === service.page
+                        pathname === service.href
                           ? "text-accent-orange bg-accent-orange/5"
                           : "text-charcoal/80 hover:text-accent-orange"
                       }`}
                     >
                       {service.label}
-                    </button>
+                    </Link>
                   ))}
 
                   {isHomePage && (
@@ -308,13 +306,19 @@ export function Header() {
                         </span>
                       </div>
                       <button
-                        onClick={() => handleNavClick(null, "why-us")}
+                        onClick={() => {
+                          handleHashScroll("why-us");
+                          setMobileOpen(false);
+                        }}
                         className="px-6 py-2.5 rounded-lg text-sm font-medium text-charcoal/80 hover:bg-soft-bg hover:text-accent-orange transition-colors text-left"
                       >
                         Why Choose Us
                       </button>
                       <button
-                        onClick={() => handleNavClick(null, "testimonials")}
+                        onClick={() => {
+                          handleHashScroll("testimonials");
+                          setMobileOpen(false);
+                        }}
                         className="px-6 py-2.5 rounded-lg text-sm font-medium text-charcoal/80 hover:bg-soft-bg hover:text-accent-orange transition-colors text-left"
                       >
                         Testimonials
@@ -322,12 +326,13 @@ export function Header() {
                     </>
                   )}
 
-                  <button
-                    onClick={() => handleNavClick(null, "contact")}
+                  <Link
+                    href="/#contact"
+                    onClick={() => setMobileOpen(false)}
                     className="px-4 py-3 rounded-lg font-medium text-charcoal hover:bg-soft-bg hover:text-accent-orange transition-colors text-left mt-2"
                   >
                     Contact Us
-                  </button>
+                  </Link>
                 </nav>
                 <div className="p-4 border-t border-border space-y-3">
                   <a href="tel:+17145551234" className="block">
@@ -339,12 +344,11 @@ export function Header() {
                       (714) 555-1234
                     </Button>
                   </a>
-                  <Button
-                    onClick={() => handleNavClick(null, "contact")}
-                    className="w-full orange-gradient text-white font-semibold border-0"
-                  >
-                    Get Free Quote
-                  </Button>
+                  <Link href="/#contact" onClick={() => setMobileOpen(false)}>
+                    <Button className="w-full orange-gradient text-white font-semibold border-0">
+                      Get Free Quote
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </SheetContent>
