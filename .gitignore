@@ -38,3 +38,4 @@ mini-services/
 examples/
 Caddyfile
 bun.lock
+.vercel

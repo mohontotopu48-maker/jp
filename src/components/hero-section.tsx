@@ -58,8 +58,7 @@ export function HeroSection() {
             <Link href="#contact">
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white/30 text-white font-semibold text-lg px-8 py-6 hover:bg-white/10 hover:border-white/50 transition-all duration-300 backdrop-blur-sm w-full sm:w-auto"
+                className="border-2 border-white/40 bg-white/10 backdrop-blur-md text-white font-semibold text-lg px-8 py-6 hover:bg-white/20 hover:border-white/60 transition-all duration-300 w-full sm:w-auto rounded-xl"
               >
                 Request a Call
               </Button>

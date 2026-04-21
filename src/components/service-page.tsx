@@ -86,8 +86,8 @@ export function ServicePage({
             </a>
             <a href="tel:+17145551234">
               <Button
-                variant="outline"
-                className="border-white/30 text-white font-semibold text-lg px-8 py-6 hover:bg-white/10 hover:border-white/50 transition-all duration-300 backdrop-blur-sm gap-2"
+                size="lg"
+                className="border-2 border-white/40 bg-white/10 backdrop-blur-md text-white font-semibold text-lg px-8 py-6 hover:bg-white/20 hover:border-white/60 transition-all duration-300 rounded-xl gap-2"
               >
                 <Phone className="h-5 w-5" />
                 (714) 555-1234

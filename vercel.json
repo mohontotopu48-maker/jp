@@ -3,7 +3,6 @@
   "buildCommand": "npx next build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "regions": ["lax1"],
   "headers": [
     {
       "source": "/images/(.*)",
